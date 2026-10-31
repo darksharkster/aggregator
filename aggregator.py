@@ -9,9 +9,14 @@ CACHE_FILE = "cache.json"
 OUTPUT_FILE = "index.html"
 DEFAULT_PER_SITE = 25
 DEFAULT_WATCHED = ["AI", "Linux", "Apple", "Google", "Open Source", "Security"]
+WATCHED_FILE = "watched.json"
 
 def load_sites():
     with open(SITES_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def load_watched():
+    with open(WATCHED_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def fetch_all(sites):
@@ -37,7 +42,7 @@ def fetch_all(sites):
         json.dump({"fetched": datetime.now().isoformat(), "sites": all_data}, f)
     return all_data
 
-def build_html(sites_data):
+def build_html(sites_data, watched):
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -62,7 +67,7 @@ ul{{margin:0; padding:0 0 0 18px}} li{{margin:4px 0; font-size:14px}}
 <label>Headlines per site: <input id="perSite" type="number" value="{DEFAULT_PER_SITE}" min="1" max="100" style="width:60px"></label>
 <label><input type="checkbox" id="togglePreview" checked> Hover preview</label>
 <label><input type="checkbox" id="toggleHide" checked> Hide clicked</label>
-<label>Watched words (comma): <input id="watchedInput" style="width:300px" value="{','.join(DEFAULT_WATCHED)}"></label>
+<label>Watched words (comma): <input id="watchedInput" style="width:300px" value="{','.join(watched)}"></label>
 <button onclick="apply()">Apply</button>
 </div>
 <div class="grid" id="grid"></div>
@@ -70,7 +75,7 @@ ul{{margin:0; padding:0 0 0 18px}} li{{margin:4px 0; font-size:14px}}
 <script>
 const DATA = {json.dumps(sites_data)};
 let perSite = {DEFAULT_PER_SITE};
-let watched = {json.dumps(DEFAULT_WATCHED)};
+let watched = {watched};
 const grid = document.getElementById('grid');
 const preview = document.getElementById('preview');
 
@@ -105,8 +110,14 @@ function render(){{
             a.addEventListener('mousemove', (e)=>{{
                 if(!document.getElementById('togglePreview').checked) return;
                 preview.style.display='block';
-                preview.style.left = e.pageX+15+'px';
-                preview.style.top = e.pageY+15+'px';
+                // FIXED - uses viewport coords for fixed element + keeps it on screen
+                let x = e.clientX + 15;
+                let y = e.clientY + 15;
+                // keep inside viewport
+                if (x + 420 > window.innerWidth) x = window.innerWidth - 420;
+                if (y + 200 > window.innerHeight) y = e.clientY - 210;
+                preview.style.left = x + 'px';
+                preview.style.top = y + 'px';
                 preview.innerHTML = '<b>'+item.title+'</b><br><br>'+(item.summary||'No preview');
             }});
             a.addEventListener('mouseleave', ()=>{{ preview.style.display='none'; }});
@@ -135,10 +146,11 @@ render();
 
 if __name__ == "__main__":
     sites = load_sites()
+    watched = load_watched()
     if os.path.exists(CACHE_FILE):
         with open(CACHE_FILE, encoding="utf-8") as f:
             cached = json.load(f)
             data = cached["sites"]
     else:
         data = fetch_all(sites)
-    build_html(data)
+    build_html(data, watched)
