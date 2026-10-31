@@ -23,7 +23,7 @@ SITES = {
     "Wired News": "https://www.wired.com/feed/rss",
     "Tom's Hardware": "https://www.tomshardware.com/feeds/all",
     "Mac Rumors": "https://www.macrumors.com/macrumors.xml",
-    "Github Trending": "https://github.com/trending/rss", # via trending rss proxy
+    "Github Trending": "https://github.com/trending/rss",
     "New York Times Tech": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
     "Phoronix": "https://www.phoronix.com/rss.php",
     "Lobsters": "https://lobste.rs/rss",
@@ -43,15 +43,12 @@ SITES = {
 CACHE_FILE = "cache.json"
 OUTPUT_FILE = "index.html"
 DEFAULT_PER_SITE = 25
-
-# Watched Words - edit this list or leave empty and set in UI
 DEFAULT_WATCHED = ["AI", "Linux", "Apple", "Google", "Open Source", "Security"]
 
 def fetch_all():
     all_data = {}
     for name, url in SITES.items():
         try:
-            # Reddit + others block without UA
             feed = feedparser.parse(url, agent="FreshNews-Aggregator/1.0")
             entries = []
             for e in feed.entries[:100]:
@@ -72,7 +69,6 @@ def fetch_all():
     return all_data
 
 def build_html(sites_data):
-    # Inline JS/CSS so it's a single file like freshnews.org
     html = f"""
 <!DOCTYPE html>
 <html>
@@ -99,7 +95,6 @@ ul{{margin:0; padding:0 0 0 18px}} li{{margin:4px 0; font-size:14px}}
 <label><input type="checkbox" id="toggleHide" checked> Hide clicked</label>
 <label>Watched words (comma): <input id="watchedInput" style="width:300px" value="{','.join(DEFAULT_WATCHED)}"></label>
 <button onclick="apply()">Apply</button>
-<span id="lastFetch"></span>
 </div>
 <div class="grid" id="grid"></div>
 <div id="preview" class="preview"></div>
@@ -125,24 +120,15 @@ function render(){{
             let li = document.createElement('li');
             let a = document.createElement('a');
             a.href=item.link; a.target='_blank';
-            a.textContent=item.title;
             a.dataset.summary = item.summary || '';
-            // watched highlight
-            let title = item.title;
+            let titleHtml = item.title;
             watched.forEach(w=>{{
-                if(w && title.toLowerCase().includes(w.toLowerCase())){{
+                if(w && titleHtml.toLowerCase().includes(w.toLowerCase())){{
                     let regex = new RegExp(`(${{w}})`, 'gi');
-                    title = title.replace(regex, '<span class="watched">$1</span>');
+                    titleHtml = titleHtml.replace(regex, '<span class="watched">$1</span>');
                 }}
             }});
-            a.innerHTML = title.includes('watched') ? title : item.title;
-            // if innerHTML was replaced we need to keep text but with spans
-            if(title.includes('watched')){{
-                // rebuild with spans
-                a.innerHTML = title;
-                // keep link functionality - re-find anchor
-                let newA = a.querySelector('a') || a;
-            }}
+            a.innerHTML = titleHtml;
             a.addEventListener('click', ()=>{{
                 clicked.push(item.link);
                 localStorage.setItem('clicked', JSON.stringify(clicked));
@@ -189,4 +175,3 @@ if __name__ == "__main__":
     else:
         data = fetch_all()
     build_html(data)
-"""
