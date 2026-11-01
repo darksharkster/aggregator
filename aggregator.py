@@ -23,7 +23,7 @@ def fetch_all(sites):
     all_data = {}
     for name, url in sites.items():
         try:
-            feed = feedparser.parse(url, agent="FreshNews-Aggregator/1.0")
+            feed = feedparser.parse(url, agent="My-Aggregator/1.0")
             entries = []
             for e in feed.entries[:100]:
                 entries.append({
