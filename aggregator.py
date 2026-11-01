@@ -50,16 +50,17 @@ def build_html(sites_data, watched):
 <meta charset="utf-8">
 <title>Tech News Aggregator</title>
 <style>
-body{{font-family: -apple-system, system-ui, sans-serif; background:#f6f6f6; margin:0; padding:10px}}
-#controls{{background:#fff; padding:12px; position:sticky; top:0; z-index:10; border-bottom:1px solid #ddd; display:flex; gap:15px; flex-wrap:wrap}}
-.column{{background:#fff; margin:10px 0; padding:10px; border-radius:8px; flex:1; min-width:300px}}
+body{{font-family: -apple-system, system-ui, sans-serif; background:#0f0f0f; color:#e0e0e0; margin:0; padding:10px}}
+#controls{{background:#1a1a1a; padding:12px; position:sticky; top:0; z-index:10; border-bottom:1px solid #333; display:flex; gap:15px; flex-wrap:wrap; color:#e0e0e0}}
+.column{{background:#1e1e1e; margin:10px 0; padding:10px; border-radius:8px; flex:1; min-width:300px; border:1px solid #2a2a2a}}
 .grid{{display:flex; flex-wrap:wrap; gap:12px}}
-a{{color:#0a58ca; text-decoration:none}} a:visited{{color:#551a8b}}
-.watched{{background:yellow; font-weight:bold; padding:0 2px}}
+a{{color:#58a6ff; text-decoration:none}} a:visited{{color:#bc8cff}} a:hover{{text-decoration:underline}}
+.watched{{background:#665500; color:#ffeb3b; font-weight:bold; padding:0 3px; border-radius:3px}}
 .hidden{{display:none !important}}
-.preview{{position:fixed; background:#111; color:#fff; padding:10px; max-width:400px; border-radius:6px; font-size:13px; display:none; z-index:100; pointer-events:none}}
-h2{{font-size:15px; border-bottom:2px solid #eee; padding-bottom:5px; margin:0 0 8px 0; display:flex; justify-content:space-between}}
+.preview{{position:fixed; background:#2a2a2a; color:#eee; padding:10px; max-width:400px; border-radius:6px; font-size:13px; display:none; z-index:100; pointer-events:none; border:1px solid #444; box-shadow:0 4px 12px rgba(0,0,0,0.5)}}
+h2{{font-size:15px; border-bottom:2px solid #333; padding-bottom:5px; margin:0 0 8px 0; display:flex; justify-content:space-between; color:#f0f0f0}}
 ul{{margin:0; padding:0 0 0 18px}} li{{margin:4px 0; font-size:14px}}
+input, select{{background:#2a2a2a; color:#e0e0e0; border:1px solid #444; border-radius:4px; padding:3px 6px}}
 </style>
 </head>
 <body>
