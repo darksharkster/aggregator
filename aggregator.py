@@ -70,6 +70,7 @@ input, select{{background:#2a2a2a; color:#e0e0e0; border:1px solid #444; border-
 <label><input type="checkbox" id="toggleHide" checked> Hide clicked</label>
 <label>Watched words (comma): <input id="watchedInput" style="width:300px" value="{','.join(watched)}"></label>
 <button onclick="apply()">Apply</button>
+<div style="flex-basis:100%; font-size:13px; color:#888; margin-top:4px;">Create time: {datetime.now()}</div>
 </div>
 <div class="grid" id="grid"></div>
 <div id="preview" class="preview"></div>
