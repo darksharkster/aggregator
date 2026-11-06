@@ -7,7 +7,7 @@ from datetime import datetime
 SITES_FILE = "sites.json"
 CACHE_FILE = "cache.json"
 OUTPUT_FILE = "index.html"
-DEFAULT_PER_SITE = 25
+DEFAULT_PER_SITE = 6
 DEFAULT_WATCHED = ["AI", "Linux", "Apple", "Google", "Open Source", "Security"]
 WATCHED_FILE = "watched.json"
 
